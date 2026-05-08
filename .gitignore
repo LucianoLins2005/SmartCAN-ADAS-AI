@@ -1,0 +1,19 @@
+# Python bytecode (arquivos temporários de execução)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment (essencial ignorar, pois cada PC tem o seu)
+venv/
+env/
+.venv/
+
+# Streamlit (arquivos temporários do dashboard)
+.streamlit/
+
+# IDEs (configurações do seu VS Code)
+.vscode/
+
+# Logs de erro e dados sensíveis
+*.log
+.env
