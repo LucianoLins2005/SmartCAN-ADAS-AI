@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 import time
 from src.main import SmartCAN
 
@@ -10,42 +10,36 @@ analyzer = SmartCAN()
 
 st.title("🚗 SmartCAN Analyzer: ADAS AI Validation")
 st.markdown("""
-    **Engineering Brief:** This dashboard monitors real-time ADAS telemetry logs to identify 
-    signal dropouts and generate AI-driven root-cause diagnostics for safety validation.
+    **Engineering Brief:** Real-time ADAS telemetry monitoring for signal integrity and AI diagnostics.
 """)
 st.markdown("---")
 
 # 2. Technical Data Simulation
 data = {
     'Timestamp (s)': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
-    'Distance_m': [50.5, 48.2, -99.0, 42.1, 40.5, 38.0], # Critical failure at 0.3s
+    'Distance_m': [50.5, 48.2, -99.0, 42.1, 40.5, 38.0], # Critical failure
     'Status': ['OK', 'OK', 'ERR_TIMEOUT', 'OK', 'OK', 'OK']
 }
 df = pd.DataFrame(data)
 
-# 3. ADVANCED TELEMETRY VISUALIZATION (Matplotlib Version)
-st.subheader("📊 Advanced Telemetry Analysis")
+# 3. RESPONSIVE VISUALIZATION (Using Plotly)
+st.subheader("📊 Interactive Telemetry Analysis")
 
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.plot(df['Timestamp (s)'], df['Distance_m'], marker='o', linestyle='-', color='#007bff', label='Frontal Radar Distance')
+# Criando o gráfico responsivo com Plotly
+fig = px.line(df, x='Timestamp (s)', y='Distance_m', 
+              title='ADAS Sensor Telemetry: Frontal Distance Over Time',
+              markers=True, 
+              labels={'Distance_m': 'Distance (Meters)', 'Timestamp (s)': 'Time (Seconds)'})
 
-# Professional Axis Nomenclature
-ax.set_title('ADAS Sensor Telemetry: Frontal Distance Over Time', fontsize=12, fontweight='bold')
-ax.set_xlabel('Time (Seconds)', fontsize=10)
-ax.set_ylabel('Distance to Target (Meters)', fontsize=10)
-ax.grid(True, linestyle='--', alpha=0.6)
-ax.legend()
+# Customizando a estética para o padrão Stellantis
+fig.update_traces(line_color='#007bff', marker=dict(size=10))
+fig.add_annotation(x=0.3, y=-99, text="CRITICAL SIGNAL DROP",
+                   showarrow=True, arrowhead=1, ax=40, ay=-40, arrowcolor="red", font=dict(color="red"))
 
-# Expert Annotation for the Manager
-ax.annotate('CRITICAL SIGNAL DROP', xy=(0.3, -99), xytext=(0.4, -60),
-             arrowprops=dict(facecolor='red', shrink=0.05),
-             color='red', fontweight='bold')
+# Garante que o gráfico ocupe 100% da largura disponível e seja responsivo
+st.plotly_chart(fig, use_container_width=True)
 
-# Setting Y-axis limits to show the drop clearly
-ax.set_ylim(-110, 70)
-
-st.pyplot(fig)
-st.caption("Figure 1: High-fidelity telemetry log. The red annotation indicates a physically impossible signal dropout.")
+st.caption("Figure 1: Responsive telemetry log. This chart automatically resizes with your browser window.")
 
 st.markdown("---")
 
@@ -54,26 +48,17 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.write("**CAN Bus Raw Logs:**")
-    # Highlight the specific row of failure
     st.dataframe(df.style.highlight_min(subset=['Distance_m'], color='#ff4b4b'), use_container_width=True)
 
 with col2:
-    st.metric(label="System Reliability Index", value="66%", delta="-34% Anomaly Detected")
+    st.metric(label="System Reliability Index", value="66%", delta="-34% Anomaly")
     
     if st.button("Generate AI Diagnostic Report"):
-        with st.spinner('Accessing engineering knowledge base...'):
-            time.sleep(1.2)
-            
-            # QA Logic Validation
+        with st.spinner('Analyzing...'):
+            time.sleep(1)
             is_valid, anomalies = analyzer.validate_data(df.rename(columns={'Timestamp (s)': 'Timestamp'}))
-            
             if not is_valid:
-                st.error(f"⚠️ **QA ALERT:** Physical constraint violated at {anomalies['Timestamp'].values[0]}s.")
-            
-            # AI Inference
+                st.error(f"⚠️ **QA ALERT:** Physical constraint violated.")
             report = analyzer.get_ai_report("ERR_TIMEOUT")
             st.info(f"🤖 **AI Verdict:** {report}")
-            st.success("✅ **Recommendation:** Inspect harness connector C1 and check Radar sensor alignment.")
-
-st.markdown("---")
-st.caption("Proprietary Tool for Stellantis ADAS Validation - AI Product Analyst Portfolio")
+            st.success("✅ **Recommendation:** Inspect harness connector C1.")
