@@ -5,7 +5,10 @@ from src.main import SmartCAN # Importa a lógica que criamos acima
 # Setup
 st.set_page_config(page_title="SmartCAN Dashboard", layout="wide")
 analyzer = SmartCAN()
-
+# Adicione isso logo após mostrar a tabela no app.py
+st.subheader("📊 Telemetry Visualization")
+st.line_chart(df.set_index('Timestamp')['Distance_m'])
+st.caption("Visual representation of sensor distance over time. Note the sharp drop representing the detected anomaly.")
 st.title("🚗 Stellantis SmartCAN - ADAS AI Validation")
 
 # 1. Simulate CAN Bus Data (The Problem)
@@ -32,3 +35,5 @@ if st.button("Run AI Diagnostic"):
     report = analyzer.get_ai_report("ERR_TIMEOUT")
     st.info(report)
     st.success("Recommendation: Inspect harness connector C1.")
+
+    
