@@ -11,16 +11,17 @@ st.line_chart(df.set_index('Timestamp')['Distance_m'])
 st.caption("Visual representation of sensor distance over time. Note the sharp drop representing the detected anomaly.")
 st.title("🚗 Stellantis SmartCAN - ADAS AI Validation")
 
-# 1. Simulate CAN Bus Data (The Problem)
-data = {
-    'Timestamp': [0.1, 0.2, 0.3, 0.4],
-    'Distance_m': [50.5, 48.2, -99.0, 42.1], # -99.0 is the simulated error
-    'Status': ['OK', 'OK', 'ERR_TIMEOUT', 'OK']
-}
-df = pd.DataFrame(data)
+# ... (mantenha o início do seu código app.py igual)
 
-st.subheader("CAN Bus Telemetry")
-st.dataframe(df)
+# 1. Input Simulation (The Problem)
+st.subheader("📡 Real-time CAN Bus Telemetry")
+
+# Gráfico de Linha para Visualização de Sinais (ADICIONE ISTO)
+st.line_chart(df.set_index('Timestamp')['Distance_m'])
+st.caption("Visual representation of sensor distance over time. Note the sharp drop at 0.3s.")
+
+col1, col2 = st.columns([2, 1])
+# ... (restante do código com a tabela e o botão)
 
 # 2. Run Validation
 if st.button("Run AI Diagnostic"):
